@@ -1908,14 +1908,14 @@ footer {
         <p class="form-sub">Wir melden uns innerhalb von 24 Stunden bei dir.</p>
         <form onsubmit="handleSubmit(event)">
           <div class="form-grid">
-            <div class="form-field"><label class="form-label">Vorname</label><input type="text" class="form-input" placeholder="Max" required></div>
-            <div class="form-field"><label class="form-label">Nachname</label><input type="text" class="form-input" placeholder="Mustermann" required></div>
+            <div class="form-field"><label class="form-label">Vorname</label><input type="text" name="vorname" class="form-input" placeholder="Max" required></div>
+            <div class="form-field"><label class="form-label">Nachname</label><input type="text" name="nachname" class="form-input" placeholder="Mustermann" required></div>
           </div>
-          <div class="form-field"><label class="form-label">E-Mail</label><input type="email" class="form-input" placeholder="deine@email.de" required></div>
-          <div class="form-field"><label class="form-label">Telefon</label><input type="tel" class="form-input" placeholder="+49 ..."></div>
+          <div class="form-field"><label class="form-label">E-Mail</label><input type="email" name="email" class="form-input" placeholder="deine@email.de" required></div>
+          <div class="form-field"><label class="form-label">Telefon</label><input type="tel" name="telefon" class="form-input" placeholder="+49 ..."></div>
           <div class="form-field">
             <label class="form-label">Ich m&ouml;chte</label>
-            <select class="form-select" required>
+            <select name="anliegen" class="form-select" required>
               <option value="" disabled selected>Bitte w&auml;hlen</option>
               <option>Mein Fahrzeug verkaufen</option>
               <option>Ein Fahrzeug beschaffen lassen</option>
@@ -1923,7 +1923,7 @@ footer {
               <option>Allgemeine Information</option>
             </select>
           </div>
-          <div class="form-field"><label class="form-label">Fahrzeug / Nachricht</label><textarea class="form-textarea" placeholder="Beschreibe dein Fahrzeug oder deinen Wunsch (Marke, Modell, Baujahr, km, Zustand ...)"></textarea></div>
+          <div class="form-field"><label class="form-label">Fahrzeug / Nachricht</label><textarea name="nachricht" class="form-textarea" placeholder="Beschreibe dein Fahrzeug oder deinen Wunsch (Marke, Modell, Baujahr, km, Zustand ...)"></textarea></div>
           <button type="submit" class="btn btn-red form-submit">Anfrage absenden</button>
         </form>
         <div id="form-success" style="display:none;margin-top:1.5rem;padding:1rem 1.25rem;background:#F0FFF4;border:1.5px solid #68D391;border-radius:6px;font-size:0.875rem;color:#276749;font-weight:600;">
@@ -1989,16 +1989,44 @@ function closeMobileMenu() {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu(); });
 
-function handleSubmit(e) {
+async function handleSubmit(e) {
   e.preventDefault();
-  const btn = e.target.querySelector('button[type=submit]');
-  btn.textContent = 'Wird gesendet...';
+  const form = e.target;
+  const btn = form.querySelector('button[type=submit]');
+  const originalText = btn.textContent;
+  btn.textContent = 'Wird gesendet…';
   btn.disabled = true;
-  setTimeout(() => {
-    document.getElementById('form-success').style.display = 'block';
-    btn.textContent = 'Gesendet';
-    btn.style.opacity = '0.5';
-  }, 900);
+
+  const data = {
+    vorname:  form.vorname.value.trim(),
+    nachname: form.nachname.value.trim(),
+    email:    form.email.value.trim(),
+    telefon:  form.telefon.value.trim(),
+    anliegen: form.anliegen.value,
+    nachricht: form.nachricht.value.trim(),
+  };
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      document.getElementById('form-success').style.display = 'block';
+      form.reset();
+      btn.textContent = 'Gesendet ✓';
+      btn.style.opacity = '0.5';
+    } else {
+      btn.textContent = 'Fehler – bitte erneut versuchen';
+      btn.disabled = false;
+      setTimeout(() => { btn.textContent = originalText; }, 3000);
+    }
+  } catch {
+    btn.textContent = 'Fehler – bitte erneut versuchen';
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = originalText; }, 3000);
+  }
 }
 
 document.querySelectorAll('a[href^="#"]').forEach(a => {
