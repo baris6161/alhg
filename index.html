@@ -1163,41 +1163,188 @@ footer {
 .footer-legal a:hover { color: rgba(255,255,255,0.7); }
 
 /* ===== MOBILE MENU ===== */
+/* ===== MOBILE MENU ===== */
 #mobile-menu {
   position: fixed;
   inset: 0;
-  background: var(--navy);
-  z-index: 999;
-  display: none;
+  z-index: 1001;
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
+  visibility: hidden;
+  pointer-events: none;
 }
-#mobile-menu a {
+#mobile-menu.open {
+  visibility: visible;
+  pointer-events: all;
+}
+.mm-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(13,27,42,0.5);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  backdrop-filter: blur(4px);
+}
+#mobile-menu.open .mm-overlay { opacity: 1; }
+.mm-panel {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: min(380px, 100vw);
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.45s cubic-bezier(0.77, 0, 0.175, 1);
+  overflow: hidden;
+}
+#mobile-menu.open .mm-panel { transform: translateX(0); }
+.mm-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+}
+.mm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.mm-logo-main {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 2.2rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  display: block;
+}
+.mm-logo-sub {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  display: block;
+}
+.mm-close {
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+.mm-close:hover { background: rgba(255,255,255,0.14); transform: rotate(90deg); }
+.mm-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0;
+  overflow-y: auto;
+}
+.mm-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.75rem;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: background 0.2s, border-color 0.2s;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: background 0.2s, border-color 0.2s, opacity 0.4s ease, transform 0.4s ease;
+}
+#mobile-menu.open .mm-link { opacity: 1; transform: translateX(0); }
+#mobile-menu.open .mm-link:nth-child(1) { transition-delay: 0.1s; }
+#mobile-menu.open .mm-link:nth-child(2) { transition-delay: 0.16s; }
+#mobile-menu.open .mm-link:nth-child(3) { transition-delay: 0.22s; }
+#mobile-menu.open .mm-link:nth-child(4) { transition-delay: 0.28s; }
+#mobile-menu.open .mm-link:nth-child(5) { transition-delay: 0.34s; }
+.mm-link:hover {
+  background: rgba(212,168,67,0.08);
+  border-left-color: var(--gold);
+}
+.mm-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gold);
+  opacity: 0.7;
+  min-width: 22px;
+}
+.mm-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.7rem;
   font-weight: 600;
   color: #fff;
-  transition: color 0.2s;
+  flex: 1;
+  letter-spacing: 0.01em;
 }
-#mobile-menu a:hover { color: var(--gold-light); }
-#mobile-menu .menu-phone {
-  font-family: 'DM Sans', sans-serif;
+.mm-link:hover .mm-text { color: var(--gold-light); }
+.mm-arrow {
   font-size: 1rem;
+  color: rgba(255,255,255,0.2);
+  transition: color 0.2s, transform 0.2s;
+}
+.mm-link:hover .mm-arrow { color: var(--gold); transform: translateX(4px); }
+.mm-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.07);
+  margin: 0.5rem 1.75rem;
+}
+.mm-footer {
+  padding: 1.5rem 1.75rem 2rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease 0.4s, transform 0.4s ease 0.4s;
+}
+#mobile-menu.open .mm-footer { opacity: 1; transform: translateY(0); }
+.mm-contact-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 0.25rem;
+}
+.mm-phone-link {
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--gold-light);
-  margin-top: 0.5rem;
+  letter-spacing: 0.02em;
+  transition: color 0.2s;
 }
-#mobile-menu .close-btn {
-  position: absolute;
-  top: 1.5rem; right: 1.5rem;
-  background: none;
-  border: none;
-  color: rgba(255,255,255,0.7);
-  font-size: 1.6rem;
-  cursor: pointer;
+.mm-phone-link:hover { color: #fff; }
+
+/* ===== SCROLL ANIMATIONS ===== */
+.section-title {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1);
 }
+.section-title.in-view { opacity: 1; transform: translateY(0); }
+
+.word-wrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1.15;
+}
+.word-inner {
+  display: inline-block;
+  transform: translateY(105%);
+  transition: transform 0.65s cubic-bezier(0.16,1,0.3,1);
+}
+.word-wrap.in-view .word-inner { transform: translateY(0); }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
@@ -1266,13 +1413,43 @@ footer {
 
 <!-- MOBILE MENU -->
 <div id="mobile-menu">
-  <button class="close-btn" onclick="closeMobileMenu()">&#x2715;</button>
-  <a href="#fahrzeuge" onclick="closeMobileMenu()">Fahrzeuge</a>
-  <a href="#leistungen" onclick="closeMobileMenu()">Leistungen</a>
-  <a href="#ablauf" onclick="closeMobileMenu()">Ablauf</a>
-  <a href="#testimonials" onclick="closeMobileMenu()">Bewertungen</a>
-  <a href="#kontakt" onclick="closeMobileMenu()">Kontakt</a>
-  <a href="tel:+491772053589" class="menu-phone">+49 177 205 3589</a>
+  <div class="mm-overlay" onclick="closeMobileMenu()"></div>
+  <div class="mm-panel">
+    <div class="mm-header">
+      <div>
+        <span class="mm-logo-main">AG Automobile</span>
+        <span class="mm-logo-sub">Fahrzeugankauf &amp; -beschaffung</span>
+      </div>
+      <button class="mm-close" onclick="closeMobileMenu()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+      </button>
+    </div>
+    <nav class="mm-nav">
+      <a href="#fahrzeuge" class="mm-link" onclick="closeMobileMenu()">
+        <span class="mm-num">01</span><span class="mm-text">Fahrzeuge</span><span class="mm-arrow">&#8594;</span>
+      </a>
+      <a href="#leistungen" class="mm-link" onclick="closeMobileMenu()">
+        <span class="mm-num">02</span><span class="mm-text">Leistungen</span><span class="mm-arrow">&#8594;</span>
+      </a>
+      <a href="#ablauf" class="mm-link" onclick="closeMobileMenu()">
+        <span class="mm-num">03</span><span class="mm-text">Ablauf</span><span class="mm-arrow">&#8594;</span>
+      </a>
+      <a href="#testimonials" class="mm-link" onclick="closeMobileMenu()">
+        <span class="mm-num">04</span><span class="mm-text">Bewertungen</span><span class="mm-arrow">&#8594;</span>
+      </a>
+      <div class="mm-divider"></div>
+      <a href="#kontakt" class="mm-link" onclick="closeMobileMenu()">
+        <span class="mm-num">05</span><span class="mm-text">Kontakt</span><span class="mm-arrow">&#8594;</span>
+      </a>
+    </nav>
+    <div class="mm-footer">
+      <div>
+        <div class="mm-contact-label">Direkt anrufen</div>
+        <a href="tel:+491772053589" class="mm-phone-link">+49 177 205 3589</a>
+      </div>
+      <a href="#kontakt" class="btn btn-red" onclick="closeMobileMenu()" style="text-align:center;justify-content:center;">Jetzt anfragen</a>
+    </div>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -1299,7 +1476,7 @@ footer {
         <a href="#leistungen" class="btn" style="background:rgba(255,255,255,0.12);color:#fff;border:1.5px solid rgba(255,255,255,0.3);">Unsere Leistungen</a>
       </div>
       <div class="hero-stats">
-        <div class="stat-pill"><div class="stat-pill-dot"></div><span class="stat-pill-text">100% Erfolgsquote</span></div>
+        <div class="stat-pill"><div class="stat-pill-dot"></div><span class="stat-pill-text">95% Erfolgsquote</span></div>
         <div class="stat-pill"><div class="stat-pill-dot"></div><span class="stat-pill-text">24/7 Erreichbar</span></div>
         <div class="stat-pill"><div class="stat-pill-dot"></div><span class="stat-pill-text">DE-weit</span></div>
       </div>
@@ -1323,7 +1500,7 @@ footer {
     <div class="ticker-item"><span class="ticker-text">Alle Marken</span><span class="ticker-dot"></span></div>
     <div class="ticker-item"><span class="ticker-text">Kostenlose Bewertung</span><span class="ticker-dot"></span></div>
     <div class="ticker-item"><span class="ticker-text">24/7 Service</span><span class="ticker-dot"></span></div>
-    <div class="ticker-item"><span class="ticker-text">100+ zufriedene Kunden</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">389+ zufriedene Kunden</span><span class="ticker-dot"></span></div>
     <div class="ticker-item"><span class="ticker-text">Autoankauf</span><span class="ticker-dot"></span></div>
     <div class="ticker-item"><span class="ticker-text">Fahrzeugbeschaffung</span><span class="ticker-dot"></span></div>
     <div class="ticker-item"><span class="ticker-text">Sofortige Abwicklung</span><span class="ticker-dot"></span></div>
@@ -1332,7 +1509,7 @@ footer {
     <div class="ticker-item"><span class="ticker-text">Alle Marken</span><span class="ticker-dot"></span></div>
     <div class="ticker-item"><span class="ticker-text">Kostenlose Bewertung</span><span class="ticker-dot"></span></div>
     <div class="ticker-item"><span class="ticker-text">24/7 Service</span><span class="ticker-dot"></span></div>
-    <div class="ticker-item"><span class="ticker-text">100+ zufriedene Kunden</span><span class="ticker-dot"></span></div>
+    <div class="ticker-item"><span class="ticker-text">389+ zufriedene Kunden</span><span class="ticker-dot"></span></div>
   </div>
 </div>
 
@@ -1617,7 +1794,7 @@ footer {
   <div class="container">
     <div class="stats-grid">
       <div class="stat-item">
-        <div class="stat-value" data-target="100" data-suffix="%">100%</div>
+        <div class="stat-value" data-target="95" data-suffix="%">95%</div>
         <div class="stat-label">Erfolgsquote</div>
       </div>
       <div class="stat-item">
@@ -1625,7 +1802,7 @@ footer {
         <div class="stat-label">Erreichbarkeit</div>
       </div>
       <div class="stat-item">
-        <div class="stat-value" data-target="100" data-suffix="+">100+</div>
+        <div class="stat-value" data-target="389" data-suffix="+">389+</div>
         <div class="stat-label">Zufriedene Kunden</div>
       </div>
       <div class="stat-item">
@@ -1809,13 +1986,16 @@ window.addEventListener('scroll', () => {
 
 function toggleMenu() {
   const m = document.getElementById('mobile-menu');
-  m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-  document.body.style.overflow = m.style.display === 'flex' ? 'hidden' : '';
+  const isOpen = m.classList.contains('open');
+  if (isOpen) closeMobileMenu();
+  else { m.classList.add('open'); document.body.style.overflow = 'hidden'; }
 }
 function closeMobileMenu() {
-  document.getElementById('mobile-menu').style.display = 'none';
+  const m = document.getElementById('mobile-menu');
+  m.classList.remove('open');
   document.body.style.overflow = '';
 }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu(); });
 
 function handleSubmit(e) {
   e.preventDefault();
@@ -1856,6 +2036,79 @@ const obs = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.5 });
 document.querySelectorAll('[data-target]').forEach(el => obs.observe(el));
+
+// ===== SCROLL ANIMATIONS =====
+// Section titles: fade + slide up
+const titleObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('in-view');
+    titleObs.unobserve(entry.target);
+  });
+}, { threshold: 0.2 });
+
+// Hero title: word-by-word rise animation
+(function setupHeroTitle() {
+  const hero = document.querySelector('.hero-title');
+  if (!hero) return;
+  // Walk text nodes and wrap each word
+  function wrapWords(node) {
+    if (node.nodeType === 3) { // text node
+      const words = node.textContent.split(/(\s+)/);
+      const frag = document.createDocumentFragment();
+      words.forEach(w => {
+        if (w.trim()) {
+          const wrap = document.createElement('span');
+          wrap.className = 'word-wrap';
+          const inner = document.createElement('span');
+          inner.className = 'word-inner';
+          inner.textContent = w;
+          wrap.appendChild(inner);
+          frag.appendChild(wrap);
+        } else {
+          frag.appendChild(document.createTextNode(w));
+        }
+      });
+      node.parentNode.replaceChild(frag, node);
+    } else if (node.nodeType === 1 && node.nodeName !== 'BR') {
+      Array.from(node.childNodes).forEach(wrapWords);
+    }
+  }
+  wrapWords(hero);
+
+  // Stagger delay on each word
+  const wraps = hero.querySelectorAll('.word-wrap');
+  wraps.forEach((w, i) => {
+    w.querySelector('.word-inner').style.transitionDelay = (i * 0.07) + 's';
+  });
+
+  // Trigger immediately with short delay (page load)
+  setTimeout(() => {
+    wraps.forEach(w => w.classList.add('in-view'));
+  }, 200);
+})();
+
+// Section titles
+document.querySelectorAll('.section-title').forEach((el, i) => {
+  titleObs.observe(el);
+});
+
+// Section label + subtitle fade-in
+const fadeObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.style.opacity = '1';
+    entry.target.style.transform = 'translateY(0)';
+    fadeObs.unobserve(entry.target);
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.section-label, .section-header .section-subtitle').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  fadeObs.observe(el);
+});
 </script>
 </body>
 </html>
