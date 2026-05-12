@@ -1211,20 +1211,28 @@ footer {
   .nav-hamburger { display: flex; }
   .leistungen-grid { grid-template-columns: 1fr; }
   .ablauf-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .testi-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: repeat(2, 1fr); }
   .kontakt-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .form-grid { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .stat-item:nth-child(odd)::after { display: none; }
+  .stat-item:nth-child(even)::after { display: none; }
+  #stats { padding: 3rem 0; }
   .hero-badge { display: none; }
 }
 @media (max-width: 480px) {
+  .nav-phone { display: none; }
   .cars-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
   .hero-ctas { flex-direction: column; align-items: flex-start; }
   .container { padding: 0 1.25rem; }
   .leistung-card { padding: 2rem 1.5rem; }
   .kontakt-form { padding: 1.75rem 1.25rem; }
+  #stats { padding: 2.5rem 0; }
+  .stat-value { font-size: clamp(1.9rem, 8vw, 2.5rem); }
+  .stat-item { padding: 1rem 0.5rem; overflow: hidden; }
+  .stat-label { font-size: 0.62rem; }
 }
 </style>
 </head>
